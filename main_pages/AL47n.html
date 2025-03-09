@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل الشحن</title>
+
+    <!-- تنسيق الصفحة -->
+    <style>
+        /* تنسيق الحاوية */
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 255, 0.3);
+            text-align: center;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        /* تحسين الحقول */
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        input:focus, select:focus {
+            border-color: #0056b3;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+            transform: scale(1.02);
+        }
+
+        /* تحسين الزر */
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        button:hover {
+            background: #0056b3;
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.4);
+        }
+
+        /* عند الضغط على الزر */
+        button:active {
+            background: #003d80;
+            transform: scale(0.95);
+        }
+
+        /* رسالة التأكيد */
+        #confirmationMessage {
+            color: green;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 15px;
+            display: none;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        /* أنيميشن ظهور */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* أنيميشن للزر عند الضغط */
+        @keyframes buttonClick {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <center>
+            <h1>اطلب يلا انت لسه هتفكر</h1>
+        </center>
+        <form id="shippingForm" onsubmit="handleSubmit(event)">
+            <label for="name">الاسم:</label>
+            <input type="text" id="name" name="name" required>
+            
+            <label for="phone">رقم التليفون:</label>
+            <input type="tel" id="phone" name="phone" required>
+            
+            <label for="address">العنوان:</label>
+            <input type="text" id="address" name="address" required>
+            
+            <label for="governorate">المحافظة:</label>
+            <select id="governorate" name="governorate" required>
+                <option value="">اختر المحافظة</option>
+                <option value="القاهرة">القاهرة</option>
+                <option value="الجيزة">الجيزة</option>
+                <option value="الإسكندرية">الإسكندرية</option>
+                <option value="الدقهلية">الدقهلية</option>
+                <option value="البحر الأحمر">البحر الأحمر</option>
+                <option value="البحيرة">البحيرة</option>
+                <option value="الفيوم">الفيوم</option>
+                <option value="الغربية">الغربية</option>
+                <option value="الإسماعيلية">الإسماعيلية</option>
+                <option value="المنوفية">المنوفية</option>
+                <option value="المنيا">المنيا</option>
+                <option value="القليوبية">القليوبية</option>
+                <option value="الوادي الجديد">الوادي الجديد</option>
+                <option value="السويس">السويس</option>
+                <option value="أسوان">أسوان</option>
+                <option value="أسيوط">أسيوط</option>
+                <option value="بني سويف">بني سويف</option>
+                <option value="بورسعيد">بورسعيد</option>
+                <option value="دمياط">دمياط</option>
+                <option value="الشرقية">الشرقية</option>
+                <option value="جنوب سيناء">جنوب سيناء</option>
+                <option value="كفر الشيخ">كفر الشيخ</option>
+                <option value="مطروح">مطروح</option>
+                <option value="الأقصر">الأقصر</option>
+                <option value="قنا">قنا</option>
+                <option value="شمال سيناء">شمال سيناء</option>
+                <option value="سوهاج">سوهاج</option>
+            </select>
+            
+            <button type="submit">اشترِ الآن</button>
+        </form>
+        <p id="confirmationMessage">تم الشراء بنجاح! ✅</p>
+    </div>
+
+    <!-- سكريبت التحكم -->
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault(); // منع التحديث الافتراضي للصفحة
+
+            // تغيير نص الزر عند الضغط
+            const button = document.querySelector("button");
+            button.innerText = "جاري الشراء...";
+            button.disabled = true;
+
+            // إضافة أنيميشن عند الضغط
+            button.style.animation = "buttonClick 0.4s ease-in-out";
+
+            // عرض رسالة التأكيد بعد ثانيتين
+            setTimeout(() => {
+                document.getElementById("confirmationMessage").style.display = "block";
+                button.innerText = "تم الشراء ✔";
+                button.style.background = "#6c757d"; // لون رمادي بعد الشراء
+                button.style.boxShadow = "none";
+                button.style.animation = "none";
+            }, 2000);
+        }
+    </script>
+
+</body>
+</html>

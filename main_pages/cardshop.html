@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>سلة المشتريات</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      width: 80%;
+      margin: auto;
+      padding: 20px;
+    }
+    .cart-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: white;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .cart-item img {
+      width: 80px;
+      height: 80px;
+      border-radius: 5px;
+    }
+    .cart-item-details {
+      flex-grow: 1;
+      margin-left: 15px;
+    }
+    .cart-item h3, .cart-item p {
+      margin: 0;
+    }
+    .cart-buttons {
+      display: flex;
+      gap: 10px;
+    }
+    .remove-btn, .checkout-btn, .back-btn {
+      padding: 10px 15px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .remove-btn {
+      background: #dc3545;
+      color: white;
+    }
+    .checkout-btn {
+      background: #28a745;
+      color: white;
+      display: block;
+      width: 100%;
+      text-align: center;
+      margin-top: 20px;
+    }
+    .back-btn {
+      background: #007bff;
+      color: white;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <button class="back-btn" onclick="history.back()">⬅ الرجوع</button>
+    <h2>سلة المشتريات</h2>
+    <div id="cartItems"></div>
+    <a href="AL47n.html">
+    <button class="checkout-btn">إتمام الشراء</button>
+  </a>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const cartContainer = document.getElementById("cartItems");
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+      function renderCart() {
+        cartContainer.innerHTML = "";
+        cart.forEach((item, index) => {
+          const cartItem = document.createElement("div");
+          cartItem.classList.add("cart-item");
+          cartItem.innerHTML = `
+            <img src="${item.image}" alt="${item.name}">
+            <div class="cart-item-details">
+              <h3>${item.name}</h3>
+              <p>${item.description}</p>
+            </div>
+            <button class="remove-btn" data-index="${index}">إزالة</button>
+          `;
+          cartContainer.appendChild(cartItem);
+        });
+      }
+
+      cartContainer.addEventListener("click", function (e) {
+        if (e.target.classList.contains("remove-btn")) {
+          const index = e.target.getAttribute("data-index");
+          cart.splice(index, 1);
+          localStorage.setItem("cart", JSON.stringify(cart));
+          renderCart();
+        }
+      });
+
+      renderCart();
+    });
+  </script>
+</body>
+</html>

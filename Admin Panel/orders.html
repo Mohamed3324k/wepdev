@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدارة الطلبات</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* تنسيق الشريط الجانبي */
+    .sidebar {
+      height: 100vh;
+      background-color: #007bff;
+      padding-top: 20px;
+      color: #fff;
+    }
+    .sidebar a {
+      color: #fff;
+      text-decoration: none;
+      display: block;
+      padding: 10px 15px;
+      transition: background 0.3s;
+    }
+    .sidebar a:hover {
+      background-color: #0056b3;
+    }
+
+    /* أنيميشن لظهور المحتوى */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .fade-in.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <!-- الشريط الجانبي -->
+      <div class="col-md-2 sidebar">
+        <h4 class="text-center">لوحة الإدارة</h4>
+        <a href="Admin Panel.html">الرئيسية</a>
+        <a href="products.html">إدارة المنتجات</a>
+        <a href="orders.html">إدارة الطلبات</a>
+        <a href="users.html">إدارة المستخدمين</a>
+        <a href="reports.html">التقارير</a>
+        <a href="settings.html">الإعدادات</a>
+        <a href="../log in/login.html">تسجيل الخروج</a>
+
+      </div>
+
+      <!-- محتوى الصفحة -->
+      <div class="col-md-10 fade-in">
+        <div class="container mt-4">
+          <h2>إدارة الطلبات</h2>
+          <table class="table mt-3">
+            <thead>
+              <tr><th>رقم الطلب</th><th>الحالة</th><th>إجراءات</th></tr>
+            </thead>
+            <tbody id="ordersTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const ordersTable = document.getElementById("ordersTable");
+      const content = document.querySelector(".fade-in");
+
+      // إضافة أنيميشن لظهور الصفحة
+      setTimeout(() => {
+        content.classList.add("show");
+      }, 300);
+
+      // بيانات تجريبية
+      let sampleOrder = `<tr>
+        <td>12345</td>
+        <td><span class="badge bg-warning">قيد التنفيذ</span></td>
+        <td><button class="btn btn-success btn-sm">تم التسليم</button></td>
+      </tr>`;
+
+      ordersTable.innerHTML = sampleOrder;
+
+      // ربط زر تسجيل الخروج
+      document.getElementById("logout").addEventListener("click", function(event) {
+        event.preventDefault();
+        alert("تم تسجيل الخروج بنجاح!");
+        window.location.href = "../log in/sign in.html";
+      });
+    });
+  </script>
+</body>
+</html>

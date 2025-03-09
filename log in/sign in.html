@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل جديد</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, fetchSignInMethodsForEmail } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDDs2cpRMPpVXU6EIWln_ntxVbseqBCJeo",
+      authDomain: "hs-store-d977d.firebaseapp.com",
+      projectId: "hs-store-d977d",
+      storageBucket: "hs-store-d977d.appspot.com",
+      messagingSenderId: "826908476527",
+      appId: "1:826908476527:web:d68834d6a9476275be399a",
+      measurementId: "G-8WY8XPQFV4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    window.handleSignUp = async function(event) {
+      event.preventDefault();
+      
+      const fullName = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim().toLowerCase();
+      const password = document.getElementById("password").value.trim();
+      const confirmPassword = document.getElementById("confirm_password").value.trim();
+
+      // Reset errors
+      document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+
+      // Validation
+      let isValid = true;
+      if (password.length < 6) {
+        document.getElementById("password-error").style.display = "block";
+        isValid = false;
+      }
+      if (password !== confirmPassword) {
+        document.getElementById("confirm-password-error").style.display = "block";
+        isValid = false;
+      }
+      if (!isValid) return;
+
+      try {
+        const methods = await fetchSignInMethodsForEmail(auth, email);
+        if (methods.length > 0) {
+          document.getElementById("email-error").style.display = "block";
+          return;
+        }
+
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await setDoc(doc(db, "users", userCredential.user.uid), {
+          fullName: fullName || "غير معروف",
+          email: email,
+          uid: userCredential.user.uid
+        });
+        
+        showSuccessModal();
+      } catch (error) {
+        console.error("Error:", error);
+        if (error.code === "auth/email-already-in-use") {
+          document.getElementById("email-error").style.display = "block";
+        }
+      }
+    };
+
+    window.closeErrorModal = function() {
+      document.getElementById("error-modal").style.display = "none";
+      document.getElementById("email").focus();
+    };
+
+    window.goToLogin = function() {
+      window.location.href = "../main_pages/ALASAYA.html";
+    };
+
+    window.proceedToSite = function() {
+      window.location.href = "../main_pages/ALASAYA.html";
+    };
+
+    function showSuccessModal() {
+      const successModal = document.getElementById("success-modal");
+      successModal.style.display = "flex";
+      setTimeout(() => {
+        proceedToSite();
+      }, 2000);
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #000;
+    }
+
+    section {
+      position: absolute;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2px;
+      flex-wrap: wrap;
+      overflow: hidden;
+    }
+
+    section::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(#000, rgb(46, 18, 202), #000000);
+      animation: animate 5s linear infinite;
+    }
+
+    @keyframes animate {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+
+    section span {
+      position: relative;
+      display: block;
+      width: calc(6.25vw - 2px);
+      height: calc(6.25vw - 2px);
+      background: #181818;
+      z-index: 2;
+      transition: 1.5s;
+    }
+
+    section span:hover {
+      background: rgb(10, 38, 161);
+      transition: 0s;
+    }
+
+    .signin {
+      position: absolute;
+      width: 400px;
+      background: #222;
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      border-radius: 4px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9);
+    }
+
+    .signin .content {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .signin .content h2 {
+      font-size: 2em;
+      color: rgb(18, 15, 201);
+      text-align: center;
+    }
+
+    .form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .inputBox {
+      position: relative;
+      width: 100%;
+    }
+
+    .inputBox input {
+      width: 100%;
+      background: #333;
+      border: none;
+      outline: none;
+      padding: 25px 10px 7.5px;
+      border-radius: 4px;
+      color: #fff;
+      font-size: 1em;
+    }
+
+    .inputBox i {
+      position: absolute;
+      left: 0;
+      padding: 15px 10px;
+      color: #aaa;
+      transition: 0.5s;
+      pointer-events: none;
+    }
+
+    .inputBox input:focus ~ i,
+    .inputBox input:valid ~ i {
+      transform: translateY(-7.5px);
+      font-size: 0.8em;
+      color: #0e0baa;
+    }
+
+    .links {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .links a {
+      color:rgb(8, 5, 218);
+      text-decoration: none;
+    }
+
+    .links a:nth-child(2) {
+      color: rgb(4, 0, 255);
+      font-weight: 600;
+    }
+
+    input[type="submit"] {
+      padding: 10px;
+      background: rgb(8, 5, 218);
+      color: #000;
+      font-weight: 600;
+      font-size: 1.35em;
+      cursor: pointer;
+      border: none;
+    }
+
+    .error-message {
+      color: #ff3860;
+      font-size: 12px;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+
+    .modal-content {
+      background: #222;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0,119,255,0.3);
+    }
+
+    .modal-content h3 {
+      color: #fff;
+      margin-bottom: 20px;
+    }
+
+    .modal-content button {
+      background: rgb(8, 5, 218);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 900px) {
+      section span {
+        width: calc(10vw - 2px);
+        height: calc(10vw - 2px);
+      }
+    }
+
+    @media (max-width: 600px) {
+      section span {
+        width: calc(20vw - 2px);
+        height: calc(20vw - 2px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <section>
+    <!-- الخلفية المتحركة -->
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <section>
+      <!-- الخلفية المتحركة -->
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>                
+      <span></span>                
+      <span></span>                
+      <span></span>   
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+  
+    <!-- ... جميع عناصر span ... -->
+
+    <div class="signin">
+      <div class="content">
+        <h2>تسجيل جديد</h2>
+        <form class="form" onsubmit="handleSignUp(event)">
+          <div class="inputBox">
+            <input type="text" id="name" placeholder="الاسم الكامل" required>
+          </div>
+          <div class="inputBox">
+            <input type="email" id="email" placeholder="البريد الإلكتروني" required>
+            <div class="error-message" id="email-error">الإيميل مستخدم بالفعل!</div>
+          </div>
+          <div class="inputBox">
+            <input type="password" id="password" placeholder="كلمة المرور" required>
+            <div class="error-message" id="password-error">كلمة المرور يجب أن تكون 6 أحرف على الأقل!</div>
+          </div>
+          <div class="inputBox">
+            <input type="password" id="confirm_password" placeholder="تأكيد كلمة المرور" required>
+            <div class="error-message" id="confirm-password-error">كلمتا المرور غير متطابقتين!</div>
+          </div>
+          <div class="inputBox">
+            <input type="submit" value="إنشاء حساب">
+          </div>
+          <div class="links">
+            <a href="login.html">تسجل الدخول</a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- نافذة الخطأ -->
+    <div id="error-modal" class="modal">
+      <div class="modal-content">
+        <h3>⚠️ الإيميل مستخدم بالفعل!</h3>
+        <button onclick="closeErrorModal()">حاول مرة أخرى</button>
+        <button onclick="goToLogin()">الدخول للحساب</button>
+      </div>
+    </div>
+
+    <!-- نافذة النجاح -->
+    <div id="success-modal" class="modal">
+      <div class="modal-content">
+        <h3>✔️ تم التسجيل بنجاح!</h3>
+        <p>جارٍ تحويلك إلى صفحة الدخول...</p>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
